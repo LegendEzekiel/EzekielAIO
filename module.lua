@@ -13,21 +13,25 @@ local function Load()
     end
 end
 --Disable an existing champion
-Champions.CppScriptMaster(false);
+
 
 if Load() then
 
+    Champions.CppScriptMaster(false);
+else
+
+    return
 
 end
 
---Environment.LoadModule("Dev");
+    --Environment.LoadModule("Dev");
 
 
---UnLoad
-Callback.Bind(CallbackType.OnUnload, function()
-    Champions.Clean()--clean QWER Spell pointer , spell range dmobj
-end)
+    --UnLoad
+    Callback.Bind(CallbackType.OnUnload, function()
+        Champions.Clean()--clean QWER Spell pointer , spell range dmobj
+    end)
 
 
---print("end");
+    --print("end");
 
