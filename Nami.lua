@@ -516,22 +516,25 @@ local function GetBuffByName(t, buffName)
 end
 
 local function UseQBySpellCantMove()
+    if Q:Ready() then
+        for _, enemy in ObjectManager.enemyHeroes:pairs() do
 
-    for _, enemy in ObjectManager.enemyHeroes:pairs() do
+            if enemy:IsValidTarget(875) then
+                --Not Nil
+                if AnimSpell[enemy.charName] then
+                    if enemy.isAlive then
+                        for index, data in     pairs(AnimSpell[enemy.charName]) do
+                            if   He:IsPlayingAnimation(Game.fnvhash(index)) then
+                                Q:Cast(enemy.position);
+                                return;
+                            end
 
-        if enemy:IsValidTarget(875) then
-            --Not Nil
-            if AnimSpell[enemy.charName] then
-                if enemy.isAlive then
-                    for index, data in     pairs(AnimSpell[enemy.charName]) do
-                        if   He:IsPlayingAnimation(Game.fnvhash(index)) then
-                            Q:Cast(enemy.position);
                         end
-
                     end
                 end
             end
         end
+
     end
 
 
@@ -542,7 +545,7 @@ local function ontick()
         return ;
     end
 
-    if My.canCast then
+    if My.canCast  then
         UseQBySpellCantMove();
     end
 
