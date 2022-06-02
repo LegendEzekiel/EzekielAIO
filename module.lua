@@ -13,18 +13,16 @@ local function Load()
     end
 end
 --Disable an existing champion
-
-
+--Environment.LoadModule("Dev");
+--Champions.CppScriptMaster(false);
 if Load() then
 
     Champions.CppScriptMaster(false);
 else
-
     return
-
 end
 
---Environment.LoadModule("Dev");
+
 
 
 --UnLoad

@@ -6,7 +6,6 @@ EnemyCastSpellCantMoveList = {
             ['Alias'] = "R"
         }
     },
-
     ['Nunu'] = {
         ['nunurshield'] = {
             ['value'] = true,
@@ -36,14 +35,6 @@ EnemyCastSpellCantMoveList = {
             ['Alias'] = "R"
         }
     },
-    ['Sion'] = {
-
-        ['SionQ'] = {
-            ['value'] = true,
-            ['Cast'] = 0,
-            ['Alias'] = "Q"
-        }
-    },
 
     ['Malzahar'] = {
         ['malzaharrsound'] = {
@@ -65,6 +56,41 @@ AnimSpell = {
             ['value'] = true,
             ['Cast'] = 0,
             ['Alias'] = "R Continued"
+        }
+    },
+    ['Nunu'] = {
+        ['Spell4'] = {
+            ['value'] = true,
+            ['Cast'] = 2,
+            ['Alias'] = "R"
+        }
+    },
+    ['Katarina'] = {
+        ['Spell4'] = {
+            ['value'] = true,
+            ['Cast'] = 2,
+            ['Alias'] = "R"
+        }
+    },
+    ['Janna'] = {
+        ['Spell4'] = {
+            ['value'] = true,
+            ['Cast'] = 0,
+            ['Alias'] = "R"
+        }
+    },
+    ['Malzahar'] = {
+        ['Spell4'] = {
+            ['value'] = true,
+            ['Cast'] = 0,
+            ['Alias'] = "R"
+        }
+    },
+    ['Velkoz'] = {
+        ['Spell4'] = {
+            ['value'] = true,
+            ['Cast'] = 2,
+            ['Alias'] = "R"
         }
     }
 
@@ -342,6 +368,7 @@ local function GetWRangeUseAllyCombo(Range)
     end
     return UseObj;
 end
+
 local function UseWCombo()
 
     if W:Ready() then
@@ -479,10 +506,47 @@ local function UseQByCantMove()
 
 end
 
+
+local function GetBuffByName(t, buffName)
+    for i, v in t.buffManager.buffs:pairs() do
+        if v.isValid and v.GetName() == buffName then
+            return true
+        end
+    end
+end
+
+local function UseQBySpellCantMove()
+
+    for _, enemy in ObjectManager.enemyHeroes:pairs() do
+
+        if enemy:IsValidTarget(875) then
+            --Not Nil
+            if AnimSpell[enemy.charName] then
+                if enemy.isAlive then
+                    for index, data in     pairs(AnimSpell[enemy.charName]) do
+                        if   He:IsPlayingAnimation(Game.fnvhash(index)) then
+                            Q:Cast(enemy.position);
+                        end
+
+                    end
+                end
+            end
+        end
+    end
+
+
+end
+
 local function ontick()
     if My.isAlive == false then
         return ;
     end
+
+    if My.canCast then
+        UseQBySpellCantMove();
+    end
+
+
     if MenuConfig['Auto']['CanNot Move Use Q'].value then
         UseQByCantMove();
     end
