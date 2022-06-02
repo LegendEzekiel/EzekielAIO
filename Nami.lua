@@ -112,6 +112,8 @@ MenuConfig = {
         ['Use Q'] = nil;
         ['Only Slow'] = nil;
         ['Use W'] = nil;
+        ['Use W Objcet'] = {};
+        ['Use W Level'] = {};
         ['Use R'] = nil;
         ['Use Key R'] = nil;
         ['Use R Number'] = nil;
@@ -125,7 +127,7 @@ MenuConfig = {
         ['Use E'] = nil,
         ['WhitelistE'] = {  },
         ['Gap Q'] = nil,
-        ['Interrupt Q']=nil
+        ['Interrupt Q'] = nil
     },
     ['Use Range'] = {
         ['Q'] = nil;
@@ -186,6 +188,13 @@ local function LoadMenu()
     MenuConfig['Combo']['Use Q'] = Combo:AddCheckBox("useQ", 'Use Q');
     MenuConfig['Combo']['Only Slow'] = Combo:AddCheckBox("slowQ", 'Only Slow Use', false);
     MenuConfig['Combo']['Use W'] = Combo:AddCheckBox("useW", 'Use W');
+    local Wmenu = Combo:AddMenu("Wsetting", "W Settings");
+    for _, ally in ObjectManager.allyHeroes:pairs() do
+        local charMenu = Wmenu:AddMenu(ally.charName .. "Menu", ally.charName);
+        MenuConfig['Combo']['Use W Objcet'][ally.charName] = charMenu:AddCheckBox(ally.charName .. "Use", "Use");
+        MenuConfig['Combo']['Use W Level'][ally.charName] = charMenu:AddSlider(ally.charName .. "Level", "Priority Level", 1, 1, 5);
+    end
+
     MenuConfig['Combo']['Use R'] = Combo:AddCheckBox("useR", 'Use R');
     MenuConfig['Combo']['Use Key R'] = Combo:AddKeyBind("keyR", ("Key R"), 84, false, false);
     MenuConfig['Combo']['Use Key R']:PermaShow(true, true);
@@ -301,19 +310,50 @@ end
 
 local function GetWRangeUseAlly(Range)
     for _, ally in ObjectManager.allyHeroes:pairs() do
-
         if ally.isAlive and ally:IsValidTarget(Range) then
             for _, enemy in ObjectManager.enemyHeroes:pairs() do
                 if enemy and enemy.isAlive and ally.position:Distance(enemy.position) <= 650 then
                     return ally;
                 end
-
             end
         end
-
-
     end
     return nil;
+end
+
+local function GetWRangeUseAllyCombo(Range)
+
+    local UseObj = nil;
+    local Level = 0;
+
+    for _, ally in ObjectManager.allyHeroes:pairs() do
+        if ally.isAlive and ally:IsValidTarget(Range) and MenuConfig['Combo']['Use W Objcet'][ally.charName].value then
+            local allyLevel = MenuConfig['Combo']['Use W Level'][ally.charName].value;
+            for _, enemy in ObjectManager.enemyHeroes:pairs() do
+                if enemy and enemy.isAlive and ally.position:Distance(enemy.position) <= 650 then
+                    if allyLevel > Level then
+                        UseObj = ally;
+                        Level = allyLevel;
+                        break ;
+                    end
+                end
+            end
+        end
+    end
+    return UseObj;
+end
+local function UseWCombo()
+
+    if W:Ready() then
+        --Ally->Enemy
+        local castAllyObj = GetWRangeUseAllyCombo(W.range);
+        if castAllyObj then
+            W:Cast(castAllyObj);
+            return ;
+        end
+
+    end
+
 end
 
 local function UseW()
@@ -363,7 +403,7 @@ local function Combo()
     end
 
     if MenuConfig['Combo']['Use W'].value then
-        UseW();
+        UseWCombo();
     end
 end
 
@@ -608,7 +648,7 @@ SpecialSpellGap = {
 }
 
 local function OnSpellAnimationStart(sender, castArgs)
-    if sender and sender.isHero and sender.isEnemy and Q:Ready()  and    MenuConfig['Auto']['Interrupt Q'].value then
+    if sender and sender.isHero and sender.isEnemy and Q:Ready() and MenuConfig['Auto']['Interrupt Q'].value then
         if SpecialSpellGap[sender.charName] and SpecialSpellGap[sender.charName][castArgs.slot] and SpecialSpellGap[sender.charName][castArgs.slot]['value'] then
             local SpellRange = sender.spellBook:GetSpellEntry(castArgs.slot):DisplayRange();
             local CastPos = nil;
