@@ -506,7 +506,6 @@ local function UseQByCantMove()
 
 end
 
-
 local function GetBuffByName(t, buffName)
     for i, v in t.buffManager.buffs:pairs() do
         if v.isValid and v.GetName() == buffName then
@@ -523,10 +522,10 @@ local function UseQBySpellCantMove()
                 --Not Nil
                 if AnimSpell[enemy.charName] then
                     if enemy.isAlive then
-                        for index, data in     pairs(AnimSpell[enemy.charName]) do
-                            if   He:IsPlayingAnimation(Game.fnvhash(index)) then
+                        for index, data in pairs(AnimSpell[enemy.charName]) do
+                            if He:IsPlayingAnimation(Game.fnvhash(index)) then
                                 Q:Cast(enemy.position);
-                                return;
+                                return ;
                             end
 
                         end
@@ -545,10 +544,9 @@ local function ontick()
         return ;
     end
 
-    if My.canCast  then
+    if My.canCast then
         UseQBySpellCantMove();
     end
-
 
     if MenuConfig['Auto']['CanNot Move Use Q'].value then
         UseQByCantMove();
@@ -603,17 +601,21 @@ end
 Callback.Bind(CallbackType.OnSpellCastComplete, OnSpellCastComplete);
 
 local function OnNewPath(sender, isDash, dashSpeed, path)
-    if isDash and Q:Ready() and sender.isHero and sender.isEnemy and sender.charName ~= 'Kalista' then
-        local pathStart = path[1];
-        local pathEnd = path[2];
-        if pathStart and pathEnd then
-            if sender:IsValidTarget(875) then
-                Q:Cast(pathEnd);
+
+    if MenuConfig['Auto']['Gap Q'].value then
+        if isDash and Q:Ready() and sender.isHero and sender.isEnemy and sender.charName ~= 'Kalista' then
+            local pathStart = path[1];
+            local pathEnd = path[2];
+            if pathStart and pathEnd then
+                if sender:IsValidTarget(875) then
+                    Q:Cast(pathEnd);
+                end
+
+
             end
 
 
         end
-
 
     end
 
