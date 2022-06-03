@@ -246,10 +246,32 @@ local function UseQBindPred()
 
 end
 
+local function UseQBindPredByHas()
+
+    if Q:Ready() then
+        local SpellName = My.spellBook:GetSpellEntry(0):GetName();
+        --print(SpellName)
+        if SpellName == "RenataQ" then
+            local T = TargetSelector.GetTarget(Q.range, DamageType.Magical);
+            if T then
+                if T:IsValidTarget(Q.range) then
+                    local Pred = Q:GetPrediction(T);
+                    if Pred and Pred.hitchance >= HitChance.High then
+                        if My.position:Distance(Pred.castPosition) <= Q.range then
+                            Q:Cast(Pred.castPosition);
+                        end
+                    end
+                end
+            end
+        end
+
+    end
+
+end
+
 local function UseE()
     if E:Ready() then
         local T = TargetSelector.GetTarget(Q.range, DamageType.Magical);
-
         if T then
             if T:IsValidTarget(E.range) then
                 local Pred = Q:GetPrediction(T);
@@ -441,6 +463,15 @@ local function AutoWLogicHP()
 
 end
 
+local function Harass()
+    if MenuConfig['Harass']['Use Q'].value then
+        UseQBindPredByHas();
+    end
+
+    if MenuConfig['Harass']['Use E'].value then
+        UseE();
+    end
+end
 local function ontick()
     if My.isAlive == false then
         return ;
@@ -455,21 +486,16 @@ local function ontick()
     end
 
     if Champions.Combo then
-
-
-        --print(My.totalHealth)
-        --print(My.totalMaxHealth)
-
         Combo();
 
     end
 
 
-    --if Champions.Harass then
-    --
-    --    Harass();
-    --
-    --end
+    if Champions.Harass then
+
+        Harass();
+
+    end
 
 
 
