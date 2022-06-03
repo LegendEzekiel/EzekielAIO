@@ -1,5 +1,5 @@
 --print English name
---print(Game.localPlayer.charName)
+print(Game.localPlayer.charName)
 --print Chinese name
 print(Game.localPlayer.displayName)
 local function Load()
@@ -7,9 +7,13 @@ local function Load()
         Environment.LoadModule("Nami");
 
         return true;
+    elseif (Game.localPlayer.charName == "Renata") then
+        Environment.LoadModule("Renata");
+        return true;
     else
-        return false;
 
+
+        return false;
     end
 end
 --Disable an existing champion
