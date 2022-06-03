@@ -254,7 +254,7 @@ local function LoadMenu()
     MenuConfig['Auto']['Interrupt Q'] = Auto:AddCheckBox("InterruptQ", 'Interrupt Q');
 
     MenuConfig['Auto']['Gap Q'] = Auto:AddCheckBox("gapQ", 'Gap Q');
-    MenuConfig['Auto']['CanNot Move Use Q'] = Auto:AddCheckBox("canNot Move Use Q", 'can\'t move Q');
+    MenuConfig['Auto']['CanNot Move Use Q'] = Auto:AddCheckBox("canNot Move Use Q", 'cant move Q');
     MenuConfig['Auto']['Use E'] = Auto:AddCheckBox("useE", 'Use E (Auto Attck)');
     local WhitelistE = Auto:AddMenu("Ewhitelist", "Whitelist E");
     for _, ally in ObjectManager.allyHeroes:pairs() do
@@ -276,7 +276,7 @@ local function LoadMenu()
     end)
 
     --draw
-    local draw = Menu:AddMenu(("draw"), ("Drawing"), false);
+    local draw = Menu:AddMenu("draw", "Drawing", false);
 
     Init();
     Champions.CreateColorMenu(draw, true)
@@ -338,7 +338,7 @@ local function GetWRangeUseAlly(Range)
     for _, ally in ObjectManager.allyHeroes:pairs() do
         if ally.isAlive and ally:IsValidTarget(Range) then
             for _, enemy in ObjectManager.enemyHeroes:pairs() do
-                if enemy and enemy.isAlive and ally.position:Distance(enemy.position) <= 650 then
+                if enemy and enemy.isAlive and ally.position:Distance(enemy.position) <= 650  and enemy.isVisible then
                     return ally;
                 end
             end
@@ -356,7 +356,7 @@ local function GetWRangeUseAllyCombo(Range)
         if ally.isAlive and ally:IsValidTarget(Range) and MenuConfig['Combo']['Use W Objcet'][ally.charName].value then
             local allyLevel = MenuConfig['Combo']['Use W Level'][ally.charName].value;
             for _, enemy in ObjectManager.enemyHeroes:pairs() do
-                if enemy and enemy.isAlive and ally.position:Distance(enemy.position) <= 650 then
+                if enemy and enemy.isAlive and ally.position:Distance(enemy.position) <= 650  and enemy.isVisible then
                     if allyLevel > Level then
                         UseObj = ally;
                         Level = allyLevel;
